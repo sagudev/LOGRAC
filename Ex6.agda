@@ -8,7 +8,6 @@
 --                                                                       --
 -- Course website: https://ucilnica.fmf.uni-lj.si/course/view.php?id=252 --
 ---------------------------------------------------------------------------
-
 module Ex6 where
 
 ----------------
@@ -256,10 +255,18 @@ data _≡_ {A : Set} (x : A) : A → Set where
 -}
 
 symm : {A : Set} {x y : A} → x ≡ y → y ≡ x
+-- goal:
+-- x = x
 symm refl = refl
 
 trans : {A : Set} {x y z : A} → x ≡ y → y ≡ z → x ≡ z
+-- x = x
 trans refl refl = refl
+
+-- tko je to v zvesku
+-- id : {A : Set} → A → A
+-- id x = x
+-- trans refl q = id q
 
 {-
    Furthermore, transitivity is associative.
@@ -267,7 +274,10 @@ trans refl refl = refl
 
 assoc : {A : Set} {x y z w : A} → (p : x ≡ y) → (q : y ≡ z) → (r : z ≡ w)
       → trans (trans p q) r ≡ trans p (trans q r)
-assoc refl refl refl = trans refl refl
+-- trans (trans refl refl) refl ≡ trans refl (trans refl refl)
+--              trans refl refl ≡ trans refl refl      by       trans refl refl = refl
+-- C-c C-. will show normalized goals!
+assoc refl refl refl = refl
 
 
 -----------------
@@ -283,9 +293,11 @@ assoc refl refl refl = trans refl refl
 -}
 
 ap : {A B : Set} (f : A → B) → {x y : A} → x ≡ y → f x ≡ f y
+-- f x ≡ f x
 ap f refl = refl
 
 tr : {A : Set} {B : A → Set} {x y : A} → x ≡ y → B x → B y
+-- B x
 tr refl a = a
 
 
@@ -294,6 +306,8 @@ tr refl a = a
 -}
 
 apd : {A : Set} {B : A → Set} (f : (x : A) → B x) → {x y : A} (p : x ≡ y) → tr p (f x) ≡ f y
+-- tr refl (f x) ≡ f x
+-- f x = f x
 apd f refl = refl
 
 
