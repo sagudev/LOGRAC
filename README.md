@@ -9,6 +9,12 @@ agda
 | C-c C-space | fill hole |
 | C-c C-n | normalise (eval the expr) |
 | C-c C-. | show ctx and normalized goal in the hole |
+| C-c C-r | ko maš napisan izraz ti pol zmanjša hole |
+| C-c C-f/b | next/prev hole |
+
+```
+x y p with f x y p
+... | a = ?
 
 ## strategija
 
