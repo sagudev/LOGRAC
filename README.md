@@ -9,7 +9,8 @@ agda
 | C-c C-space | fill hole |
 | C-c C-n | normalise (eval the expr) |
 | C-c C-. | show ctx and normalized goal in the hole |
-| C-c C-r | ko maš napisan izraz ti pol zmanjša hole |
+| C-c C-r | ko maš napisan izraz ti pol zmanjša hole --- parial proof search |
+| C-c C-a | auto proof search in hole |
 | C-c C-f/b | next/prev hole |
 
 ```
