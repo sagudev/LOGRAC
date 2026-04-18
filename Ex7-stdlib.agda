@@ -393,7 +393,13 @@ data _</≡/>_ (m n : ℕ) : Set where
 -}
 
 test-</≡/> : (m n : ℕ) → m </≡/> n
-test-</≡/> m n = {!!}
+test-</≡/> zero zero = m≡n refl
+test-</≡/> zero (suc n) = m<n tt
+test-</≡/> (suc m) zero = m>n tt
+test-</≡/> (suc m) (suc n) with (test-</≡/> m n)
+... | m<n p = m<n p
+... | m≡n p = m≡n (cong suc p)
+... | m>n p = m>n p
 
 
 -----------------
