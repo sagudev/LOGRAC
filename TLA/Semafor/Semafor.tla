@@ -25,6 +25,7 @@ EventuallyGreen == []<>( light = "Green" )
 
 YellowLeadsToGreen == []( light = "Yellow" ~> light = "Green" )
 
+(* will be checked by TLC *)
 Invariants == TypeOK
 Properties == EventuallyGreen /\ YellowLeadsToGreen
 

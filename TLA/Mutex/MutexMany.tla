@@ -52,4 +52,5 @@ THEOREM Spec => []( MutualExclusion )
 PROOF OMITTED
 THEOREM Spec => Liveness
 PROOF OMITTED
+
 =============================================================================
