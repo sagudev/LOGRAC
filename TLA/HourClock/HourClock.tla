@@ -11,10 +11,12 @@ Init == hour = 1
 (* Next-state relation - actions *)
 Next == hour' = IF hour = 12 THEN 1 ELSE hour + 1
 
-(* We put it all together into the system specification *)
-(* + Weak Fairness: if it always can happen, then it eventually will happen *)
+(* Weak Fairness: if it always can happen, then it eventually will happen *)
 (*                 meaning no infinity stuttering occur (UNCHANGED)*)
-Spec == Init /\ [][Next]_hour /\ WF_hour(Next)
+Fairness == WF_hour(Next)
+
+(* We put it all together into the system specification *)
+Spec == Init /\ [][Next]_hour /\ Fairness
 
 -----------------------------------------------------------------------------
 

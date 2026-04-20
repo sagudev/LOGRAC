@@ -1,6 +1,6 @@
 ----------------------------- MODULE MutexMany -----------------------------
 
-EXTENDS TLAPS, Naturals, Sequences
+EXTENDS Naturals, Sequences
 
 CONSTANT N
 ASSUME N \in Nat /\ N > 0
@@ -12,10 +12,7 @@ States == { "n", "t", "c" }
 
 Proc == 1 .. N
 
-(* Type invariant *)
-TypeOK == p \in [Proc -> States]
-
-Init == TypeOK /\ \A i \in Proc: p[i] = "n"
+Init == \A i \in Proc: p[i] = "n"
 
 Step(i) ==
   (* if p_i = n keep all p except p[i], which should become "t"*)
@@ -28,13 +25,18 @@ Step(i) ==
 (* move one processor one step forward *)
 Next == \E i \in Proc: Step(i)
 
+Fairness == \A i \in Proc: SF_p(Step(i))
+
 (* System specification *)
 Spec ==
   /\ Init
   /\ [][Next]_p
-  /\ \A i \in Proc: SF_p(Step(i))
+  /\ Fairness
 
 ---------------------------------------------------------------------------
+
+(* Type invariant *)
+TypeOK == p \in [Proc -> States]
 
 (* Mutual exclusion invariant (safety property) *)
 MutualExclusion == \A i, j \in Proc: i # j => ~( p[i] = "c" /\ p[j] = "c" )

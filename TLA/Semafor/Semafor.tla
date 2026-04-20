@@ -15,7 +15,10 @@ Next ==
   \/ light = "Yellow" /\ light' = "Green"
   \/ light = "Green" /\ light' = "Red"
 
-Spec == Init /\ [][Next]_<< light >> /\ WF_<< light >>(Next)
+Fairness == WF_<< light >>(Next)
+
+(* System specification *)
+Spec == Init /\ [][Next]_<< light >> /\ Fairness
 
 -----------------------------------------------------------------------------
 

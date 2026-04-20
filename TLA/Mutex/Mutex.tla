@@ -35,13 +35,15 @@ Next2 == ChangeP2 /\ UNCHANGED p1
 
 Next == Next1 \/ Next2
 
+Fairness ==
+  /\ SF_<< p1, p2 >>(Next1)
+  /\ SF_<< p1, p2 >>(Next2)
+
 (* System specification *)
 Spec ==
   /\ Init
   /\ [][Next]_<< p1, p2 >>
-  (*tuple of p1, p2*)
-  /\ SF_<< p1, p2 >>(Next1)
-  /\ SF_<< p1, p2 >>(Next2)
+  /\ Fairness
 
 ------------------------------------------------------------------------
 
