@@ -12,7 +12,10 @@ States == { "n", "t", "c" }
 
 Proc == 1 .. N
 
-Init == \A i \in Proc: p[i] = "n"
+(* Type invariant *)
+TypeOK == p \in [Proc -> States]
+
+Init == TypeOK /\ \A i \in Proc: p[i] = "n"
 
 Step(i) ==
   (* if p_i = n keep all p except p[i], which should become "t"*)
@@ -34,9 +37,6 @@ Spec ==
   /\ Fairness
 
 ---------------------------------------------------------------------------
-
-(* Type invariant *)
-TypeOK == p \in [Proc -> States]
 
 (* Mutual exclusion invariant (safety property) *)
 MutualExclusion == \A i, j \in Proc: i # j => ~( p[i] = "c" /\ p[j] = "c" )

@@ -19,8 +19,6 @@ VARIABLES state, forkOwner
 Left(i) == i
 Right(i) == IF i = N THEN 1 ELSE i + 1
 
-
-
 (* Naive *)
 (*
 FirstFork(i) == Left(i)

@@ -6,16 +6,6 @@ VARIABLES p1, p2
 
 ------------------------------------------------------------------------
 
-
-(*
-/\ TRUE
-  \/ TRUE
-/\ FALSE == (T \/ T) /\ F
-
-\/ TRUE
-\/ TRUE
-  /\ FALSE == T \/ (T /\ F)
-*)
 Init ==
   /\ p1 = "n1"
   /\ p2 = "n2"
@@ -36,6 +26,7 @@ Next2 == ChangeP2 /\ UNCHANGED p1
 
 Next == Next1 \/ Next2
 
+(* Strong Fairness: if an action isn’t permanently disabled it will eventually happen *)
 Fairness ==
   /\ SF_<< p1, p2 >>(Next1)
   /\ SF_<< p1, p2 >>(Next2)
@@ -48,9 +39,7 @@ Spec ==
 
 ------------------------------------------------------------------------
 
-(* Mutual exclusion invariant - holds for all states *)
-(* Only works for state predicates (one with no primes or temporal operators) *)
-(* or as we called it safety property *)
+(* Mutual exclusion invariant or as we called it safety property *)
 (*                  G ( ¬(c1 ∧ c2) ) *)
 MutualExclusion == ~( p1 = "c1" /\ p2 = "c2" )
 
