@@ -1,4 +1,5 @@
 ----------------------------- MODULE Mutex -----------------------------
+
 EXTENDS TLAPS
 
 VARIABLES p1, p2

@@ -1,4 +1,5 @@
 ------------------------------ MODULE DiningPhilosophers ------------------------------
+
 EXTENDS Naturals, Sequences, FiniteSets
 
 CONSTANT N
