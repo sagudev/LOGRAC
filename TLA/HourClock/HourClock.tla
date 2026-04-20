@@ -1,7 +1,7 @@
 ----------------------------- MODULE HourClock -----------------------------
 
 (* Hello world of TLA+ - a simple hour clock that cycles through 1..12 *)
-EXTENDS Naturals, TLAPS
+EXTENDS Naturals
 
 (* Variables are some kind of state holders *)
 VARIABLES hour
