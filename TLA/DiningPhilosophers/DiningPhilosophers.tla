@@ -2,9 +2,8 @@
 
 EXTENDS Naturals, Sequences, FiniteSets
 
+(* number of philosophers and forks *)
 CONSTANT N
-
-\* number of philosophers (and forks)
 ASSUME N \in Nat /\ N >= 1
 
 Philosophers == 1 .. N
