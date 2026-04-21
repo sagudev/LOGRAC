@@ -18,6 +18,7 @@ VARIABLES hour
 Init == hour = 1
 
 (* State transitions - actions *)
+(* hour' is next value of hour *)
 Next == hour' = IF hour = 12 THEN 1 ELSE hour + 1
 
 (* Weak Fairness: if it always can happen, then it eventually will happen *)
