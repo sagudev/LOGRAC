@@ -77,7 +77,7 @@ ExclusiveAccess ==
 
 (* If a philosopher is hungry, it will eventually eat. *)
 Liveness ==
-  \A i \in Philosophers: []( state[i] = "hungry" => <>( state[i] = "eating" ) )
+  \A i \in Philosophers: []( state[i] = "hungry" ~> state[i] = "eating" )
 
 (* will be checked by TLC *)
 Invariants == TypeOK /\ ExclusiveAccess
