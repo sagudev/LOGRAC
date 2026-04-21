@@ -4,6 +4,8 @@ EXTENDS Naturals, Sequences
 
 CONSTANT N
 ASSUME N \in Nat /\ N > 0
+
+(* Sequence of processors' states: Proc -> States *)
 VARIABLE p
 
 ----------------------------------------------------------------------------
