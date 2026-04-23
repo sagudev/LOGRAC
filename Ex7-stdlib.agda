@@ -117,6 +117,9 @@ module WithPropInd where
   {-
     However trying to define a Type-elimination principle for `≤` with `Prop` fails. You can attempt
     to finish the definition below, but since you are unable to pattern-match on `p`.
+
+    ERRATA: You can attempt to finish the definition below, but since you are unable to pattern-match on `p`,
+    there is no way to extract a proof of `m ≤ n` from `p : suc m ≤ suc n`.
   -}
   module _ (P : (m n : ℕ) → Prop)
     (pzn : (n : ℕ) → P zero n)
@@ -456,6 +459,12 @@ insert = {!!}
 {-
    As a sanity check, prove that inserting 12, 27, and 52 into the above example tree correctly
    returns the expected trees.
+
+ERRATA: You can skip the sanity check proofs. If you have time you can come back to them.
+They were intended to be solved using equational reasoning, which I have not introduced.
+You can look at more details here or here.
+Import `open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)` from the standard library to use it,
+or copy the definition from PLFA.
 -}
 
 insert-12 : insert (node (node empty 22 (node empty 32 empty)) 42 (node empty 52 empty)) 12
