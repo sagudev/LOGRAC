@@ -368,9 +368,14 @@ open import Function using (id; _∘_)
    between functions.
 -}
 
+-- pointwise eq
+list-vec-list′ : {A : Set} (xs : List A) → (to-list ∘ to-vec) xs ≡ id xs
+list-vec-list′ [] = refl
+list-vec-list′ (x ∷ xs) = cong (λ ys → x ∷ ys) (list-vec-list′ xs)
+
 list-vec-list : {A : Set}
               → (to-list ∘ to-vec) ≡ id {A = List A}
-list-vec-list = {!!}
+list-vec-list = fun-ext list-vec-list′ -- fun-ext
 
 
 -----------------
@@ -454,7 +459,11 @@ data Tree (A : Set) : Set where
 -}
 
 insert : Tree ℕ → ℕ → Tree ℕ
-insert = {!!}
+insert empty n = node empty n empty
+insert (node t m u) n with (test-</≡/> m n)
+... | m≡n p = node t m u
+... | m>n p = node (insert t n) m u
+... | m<n p = node t m (insert u n)
 
 {-
    As a sanity check, prove that inserting 12, 27, and 52 into the above example tree correctly
@@ -466,7 +475,7 @@ You can look at more details here or here.
 Import `open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)` from the standard library to use it,
 or copy the definition from PLFA.
 -}
-
+{-
 insert-12 : insert (node (node empty 22 (node empty 32 empty)) 42 (node empty 52 empty)) 12
             ≡
             node (node (node empty 12 empty) 22 (node empty 32 empty)) 42 (node empty 52 empty)
@@ -481,7 +490,7 @@ insert-52 : insert (node (node empty 22 (node empty 32 empty)) 42 (node empty 52
             ≡
             node (node empty 22 (node empty 32 empty)) 42 (node empty 52 empty)
 insert-52 = {!!}
-
+-}
 
 -----------------
 -- Exercise 12 --
@@ -496,7 +505,9 @@ insert-52 = {!!}
 -}
 
 data _∈_ (n : ℕ) : Tree ℕ → Set where
-  {- EXERCISE: the constructors for the `∈` relation go here -}
+   here : {t u : Tree ℕ} → n ∈ (node t n u)
+   left : {m : ℕ} {t u : Tree ℕ} → n ∈ t → n ∈ (node t m u)
+   right : {m : ℕ} {t u : Tree ℕ} → n ∈ u → n ∈ (node t m u)
 
 
 {-
@@ -514,7 +525,11 @@ data _∈_ (n : ℕ) : Tree ℕ → Set where
 -}
 
 insert-∈ : (t : Tree ℕ) → (n : ℕ) → n ∈ (insert t n)
-insert-∈ t n = {!!}
+insert-∈ empty n = here
+insert-∈ (node t m u) n with (test-</≡/> m n)
+... | m≡n p = {!!}
+... | m>n p = left (insert-∈ t n)
+... | m<n p = right (insert-∈ u n)
 
 
 -------------------------------------
