@@ -527,7 +527,7 @@ data _∈_ (n : ℕ) : Tree ℕ → Set where
 insert-∈ : (t : Tree ℕ) → (n : ℕ) → n ∈ (insert t n)
 insert-∈ empty n = here
 insert-∈ (node t m u) n with (test-</≡/> m n)
-... | m≡n p = {!!}
+... | m≡n p rewrite p = here -- rewrite using ≡
 ... | m>n p = left (insert-∈ t n)
 ... | m<n p = right (insert-∈ u n)
 
@@ -607,10 +607,27 @@ data IsBST : Tree ℕ → Set where
    Hint: You might find it helpful to prove the transitivity of `<∞`.
 -}
 
+-- cannot use std cuz we rolled our own
+transitive' : (m n k : ℕ) → m < n → n < k → m < k
+transitive' zero (suc n) (suc k) r1 r2 = tt
+transitive' (suc m) (suc n) (suc k) r1 r2 = transitive' m n k r1 r2
+
+-- ditto
+trans-<∞ : {a b c : ℕ∞} → a <∞ b → b <∞ c → a <∞ c
+trans-<∞ { -∞} {b} {c} ab bc = tt
+trans-<∞ {[ x ]} {[ x₁ ]} {[ x₂ ]} ab bc = transitive' x x₁ x₂ ab bc
+trans-<∞ {[ x ]} {[ x₁ ]} {+∞} ab bc = tt
+
 isbst-rec-<∞ : {lower upper : ℕ∞} {t : Tree ℕ}
              → IsBST-rec lower upper t
              → lower <∞ upper
-isbst-rec-<∞ = {!!}
+isbst-rec-<∞ (empty-bst {p}) = p
+isbst-rec-<∞ {lower = lower} {upper = upper} (node-bst {n = n} l r) = let
+      nn = [ n ]
+      leftOk  = isbst-rec-<∞ l      -- proof: lower <∞ nn
+      rightOk = isbst-rec-<∞ r      -- proof: nn <∞ upper
+   in -- we need to pass down type args explicitly cuz agda is stupid
+      trans-<∞ {a = lower} {b = nn} {c = upper} leftOk rightOk
 
 bst : IsBST (node (node empty 2 (node empty 3 empty)) 5 (node empty 6 empty))
 bst = node-bst
@@ -655,7 +672,7 @@ IsBSTᵖ (node t n u) = IsBST-recᵖ -∞ [ n ] t ∧ IsBST-recᵖ [ n ] +∞ u
 isbst-recᵖ-<∞ : {lower upper : ℕ∞} {t : Tree ℕ}
              → IsBST-recᵖ lower upper t
              → lower <∞ upper
-isbst-recᵖ-<∞ = {!!}
+isbst-recᵖ-<∞ p = {!!}
 
 {-
    In fact, defining `<∞` as we did above also makes the definition of transitivity worse. Try
@@ -675,8 +692,18 @@ isbst-recᵖ-<∞ = {!!}
    auxiliary lemma about `insert` preserving also the recursively defined `IsBST-rec` relation.
 -}
 
+insert-bst-rec : {lower upper : ℕ∞} {t : Tree ℕ} {n : ℕ}
+             → IsBST-rec lower upper t
+             → IsBST-rec lower upper (insert t n)
+insert-bst-rec empty-bst = node-bst empty-bst empty-bst
+insert-bst-rec {n = n} (node-bst {n = m} l r) with (test-</≡/> m n)
+... | m≡n p rewrite p = node-bst l r
+... | m>n p = {!node-bst (insert-bst-rec {[ n ]} l) r!}
+... | m<n p = {!!}
+
 insert-bst : (t : Tree ℕ) → (n : ℕ) → IsBST t → IsBST (insert t n)
-insert-bst = {!!}
+insert-bst empty n pt = {!    !}
+insert-bst (node t x t₁) n pt = {!   !}
 
 -----------------
 -- Exercise 16 --

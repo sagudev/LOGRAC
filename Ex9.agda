@@ -196,7 +196,12 @@ open _≃_
         → Σ[ x ∈ A ] (Σ[ y ∈ B x ] (C x y))
           ≃
           Σ[ xy ∈ Σ[ x ∈ A ] (B x) ] (C (proj₁ xy) (proj₂ xy))
-Σ-assoc = record {}
+Σ-assoc = record
+  { to = λ { (x , (y , c)) → ((x , y) , c) }
+  ; from = λ { ((x , y) , c) → (x , (y , c)) }
+  ; to∘from = λ { ((x , y) , c) → refl }
+  ; from∘to = λ { (x , (y , c)) → refl }
+  }
 
 {-
    Second, prove the same thing using copatterns. For a reference on copatterns,
@@ -207,8 +212,8 @@ open _≃_
         → Σ[ x ∈ A ] (Σ[ y ∈ B x ] (C x y))
           ≃
           Σ[ xy ∈ Σ[ x ∈ A ] (B x) ] (C (proj₁ xy) (proj₂ xy))
-Σ-assoc' .to (fst , fst₁ , snd) = (fst , fst₁) , snd
-Σ-assoc' .from ((fst , snd₁) , snd) = fst , (snd₁ , snd)
+Σ-assoc' .to (x , y , c) = (x , y) , c
+Σ-assoc' .from ((x , y) , c) = x , (y , c)
 Σ-assoc' .from∘to a = refl
 Σ-assoc' .to∘from a = refl
 
@@ -226,10 +231,13 @@ open _≃_
    with the lemmas we imported from `Data.List.Properties`.
 -}
 
--- map map-id
+-- map map-id map-∘
 
 ≃-List : {A B : Set} → A ≃ B → List A ≃ List B
-≃-List record { to = to ; from = from ; from∘to = from∘to ; to∘from = to∘from } = record {}
+≃-List (record { to = to }) .to la = map to la
+≃-List (record { from = from }) .from lb = map from lb
+≃-List record { to = to ; from = from ; from∘to = ft ; to∘from = _ } .from∘to la = {!map-∘ from to!}
+≃-List ab .to∘from = {!!}
 
 
 ----------------
@@ -296,11 +304,14 @@ DecList DS .proj₁ = record { carr = DecList-carr ; test-≡ = DecList-test-≡
       DecList-test-≡ [] [] = yes refl
       DecList-test-≡ [] (x ∷ ys) = no (λ ())
       DecList-test-≡ (x ∷ xs) [] = no (λ ())
-      DecList-test-≡ (x ∷ xs) (y ∷ ys) = {! DecList-test-≡ xs ys  !}
-DecList DS .proj₂ = {!!}
+      DecList-test-≡ (x ∷ xs) (y ∷ ys) with DecList-test-≡ xs ys
+      ... | yes xs≡ys = {!!}
+      ... | no ¬xs≡ys = {!!}
+      --DecList-test-≡ xs ys = {!!}
+DecList DS .proj₂ = refl
 
 
-----------------
+--------------
 -- Exercise 6 --
 ----------------
 
