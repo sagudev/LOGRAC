@@ -294,6 +294,7 @@ open DecType
    elements of this type is itself a type with decidable equality.
 -}
 
+open Eq using (cong₂)
 DecList : (DS : DecType) → Σ[ DS' ∈ DecType ] (carr DS' ≡ List (carr DS))
 DecList DS .proj₁ = record { carr = DecList-carr ; test-≡ = DecList-test-≡ }
    where
@@ -304,12 +305,13 @@ DecList DS .proj₁ = record { carr = DecList-carr ; test-≡ = DecList-test-≡
       DecList-test-≡ [] [] = yes refl
       DecList-test-≡ [] (x ∷ ys) = no (λ ())
       DecList-test-≡ (x ∷ xs) [] = no (λ ())
-      DecList-test-≡ (x ∷ xs) (y ∷ ys) with DecList-test-≡ xs ys
-      ... | yes xs≡ys = {!!}
-      ... | no ¬xs≡ys = {!!}
-      --DecList-test-≡ xs ys = {!!}
+      -- DecList-test-≡ (x ∷ xs) (y ∷ ys) with DecList-test-≡ xs ys
+      --... | yes xs≡ys with test-≡ DS x y
+      --...   | yes x≡y = yes (cong₂ _∷_ x≡y xs≡ys)
+      --...   | no ¬x≡y = no (λ {refl → ¬x≡y refl})
+      --... | no ¬xs≡ys = no (λ {refl → ¬xs≡ys refl})
+      DecList-test-≡ (x ∷ xs) (y ∷ ys) =  {!!}
 DecList DS .proj₂ = refl
-
 
 --------------
 -- Exercise 6 --
@@ -373,21 +375,30 @@ module NoDupList where
     ∈-here  : {x : A} → {xs : List A} → x ∈ (x ∷ xs)
     ∈-there : {x y : A} {xs : List A} → x ∈ xs → x ∈ (y ∷ xs)
 
+  infix 4 _∉_
+  _∉_ : {A : Set} → A → List A → Set
+  _∉_ x xs = x ∈ xs → ⊥
+
   data NoDup {A : Set} : List A → Set where
     {- EXERCISE: replace this comment with constructors for `NoDup` -}
+    nd-[]  : NoDup []
+    nd-∷   : {x : A} {xs : List A} →
+             x ∉ xs →
+             NoDup xs →
+             NoDup (x ∷ xs)
 
   {-
      Next, prove some sanity-checks about the correctness of `NoDup`.
   -}
 
   nodup-test₁ : NoDup {ℕ} []
-  nodup-test₁ = {!!}
+  nodup-test₁ = nd-[]
 
   nodup-test₂ : NoDup (4 ∷ 2 ∷ [])
-  nodup-test₂ = {!!}
+  nodup-test₂ = nd-∷ (λ { (∈-there ()) }) (nd-∷ (λ ()) nd-[])
 
   nodup-test₃ : ¬ (NoDup (4 ∷ 2 ∷ 4 ∷ []))
-  nodup-test₃ = {!!}
+  nodup-test₃ (nd-∷ x _) = x (∈-there ∈-here)
 
   {-
      Finally, prove that `add` preserves the no-duplicates property.
@@ -396,11 +407,20 @@ module NoDupList where
      under certain conditions, if `x` is in `add xs x'`, then `x` was actually
      already present in `xs` (When would this be the case?).
   -}
+  add-nodup-lemma : ⦃ DS : DecType ⦄ → (xs : List (carr DS)) → (x : carr DS) → (x' : carr DS)
+            → (¬ (x ≡ x'))
+            → x ∈ (add xs x')
+            → x ∈ xs
+  add-nodup-lemma ⦃ DS ⦄ [] x x' x!x' ∈-here = ⊥-elim (x!x' refl)
+  add-nodup-lemma ⦃ DS ⦄ (x₁ ∷ xs) x x' x!x' x∈xsx' = {!   !}
 
   add-nodup : ⦃ DS : DecType ⦄ → (xs : List (carr DS)) → (y : carr DS)
             → NoDup xs
             → NoDup (add xs y)
-  add-nodup xs y p = {!!}
+  add-nodup [] y p = nd-∷ (λ ()) p
+  add-nodup ⦃ DS ⦄ (x ∷ xs) y proof_xxs@(nd-∷ proof_x!xs proof_xs) with (test-≡ DS) x y
+  ...                       | yes refl = proof_xxs
+  ...                       | no  proof_x!y = nd-∷ (λ q → proof_x!xs (add-nodup-lemma ⦃ DS ⦄ xs x y proof_x!y q)) (add-nodup xs y proof_xs)
 
 
 ----------------
